@@ -1,0 +1,52 @@
+<div ng-controller="DatabaseDrawerCtrl" class="inner">
+  <h4>Database Information</h4>
+  <h5>Node labels<span ng-show="labels.showing" class="count">&nbsp;({{labels.total}})</span></h5><a ng-show="labels.showing" ng-click="editor.execScript('MATCH (n) RETURN n LIMIT 25')" class="token token-label">*</a><span ng-show="!labels.showing">No labels in database</span><span ng-repeat="label in labels.list"><a ng-click="editor.execScript(substituteToken('MATCH (n:&lt;token&gt;) RETURN n LIMIT 25', label))" class="token token-label">{{label}}</a></span>
+  <div ng-show="labels.showing &amp;&amp; labels.showing &lt; labels.total"><a ng-click="showMore('labels')">Show {{labels.nextStepSize}} more</a>&nbsp;|&nbsp;<a ng-click="showAll('labels')">Show all</a></div>
+  <h5>Relationship types<span ng-show="relationships.showing" class="count">&nbsp;({{relationships.total}})</span></h5><a ng-show="relationships.showing" ng-click="editor.execScript('MATCH ()-[r]-&gt;() RETURN r LIMIT 25')" class="token token-relationship-type">*</a><span ng-show="!relationships.showing">No relationships in database</span><span ng-repeat="relationshipType in relationships.list"><a ng-click="editor.execScript(substituteToken('MATCH p=()-[r:&lt;token&gt;]-&gt;() RETURN p LIMIT 25', relationshipType))" class="token token-relationship-type">{{relationshipType}}</a></span>
+  <div ng-show="relationships.showing &amp;&amp; relationships.showing &lt; relationships.total"><a ng-click="showMore('relationships')">Show {{relationships.nextStepSize}} more</a>&nbsp;|&nbsp;<a ng-click="showAll('relationships')">Show all</a></div>
+  <div ng-show="propertyKeys.showing">
+    <h5>Property keys<span class="count">&nbsp;({{propertyKeys.total}}) </span></h5><span ng-show="!propertyKeys.showing">No property keys in database</span><span ng-repeat="propertyKey in propertyKeys.list"><a ng-click="editor.execScript(substituteToken('MATCH (n) WHERE EXISTS(n.&lt;token&gt;) RETURN DISTINCT &quot;node&quot; as element, n.&lt;token&gt; AS &lt;token&gt; LIMIT 25 UNION ALL MATCH ()-[r]-() WHERE EXISTS(r.&lt;token&gt;) RETURN DISTINCT &quot;relationship&quot; AS element, r.&lt;token&gt; AS &lt;token&gt; LIMIT 25', propertyKey))" class="token token-property-key">{{propertyKey}}</a></span>
+    <div ng-show="propertyKeys.showing &amp;&amp; propertyKeys.showing &lt; propertyKeys.total"><a ng-click="showMore('propertyKeys')">Show {{propertyKeys.nextStepSize}} more</a>&nbsp;|&nbsp;<a ng-click="showAll('propertyKeys')">Show all</a></div>
+  </div>
+  <div ng-show="user">
+    <h5>Connected as</h5>
+    <ul>
+      <li class="pair">
+        <div class="key">Username:</div>
+        <div class="value">{{user.username}}</div>
+      </li>
+      <li ng-show="neo4j.enterpriseEdition" class="pair">
+        <div class="key">{{(user.roles.length === 1)? 'Role:' : 'Roles:'}}</div>
+        <div class="value">{{user.roles.join(', ')}}</div>
+      </li>
+      <li ng-show="features.showAdmin" class="pair">
+        <div class="key">Admin:</div><a exec-topic="server user list" class="value">server user list</a>
+      </li>
+    </ul>
+  </div>
+  <h5>Database</h5>
+  <ul>
+    <li ng-if="neo4j.clusterRole" class="pair">
+      <div class="key">Cluster role:</div>
+      <div class="value">{{ neo4j.clusterRole }}</div>
+    </li>
+    <li class="pair">
+      <div class="key">Version:</div>
+      <div class="value">{{ neo4j.version }}</div>
+    </li>
+    <li class="pair">
+      <div class="key">Name:</div>
+      <div class="value">{{kernel.DatabaseName || '-'}}</div>
+    </li>
+    <li class="pair">
+      <div class="key">Size:</div>
+      <div class="value">{{kernel.TotalStoreSize | humanReadableBytes}}</div>
+    </li>
+    <li class="pair">
+      <div class="key">Information:</div><a play-topic="sysinfo" class="value">sysinfo</a>
+    </li>
+    <li ng-show="features.canListQueries" class="pair">
+      <div class="key">Query List:</div><a exec-topic="queries" class="value">queries</a>
+    </li>
+  </ul>
+</div>

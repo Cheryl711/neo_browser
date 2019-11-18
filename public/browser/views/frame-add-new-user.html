@@ -1,0 +1,96 @@
+<div fullscreen="fullscreen">
+  <div class="outer">
+    <div class="code-bar">
+      <ul class="actions list-inline">
+        <li dropdown="" ng-show="frame.type == &quot;http&quot;" class="dropdown"><a dropdown-toggle="" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportJSON(frame.response)">Download JSON</a></li>
+          </ul>
+        </li>
+        <li dropdown="" ng-show="frame.type == &quot;shell&quot;" class="dropdown"><a dropdown-toggle="" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportText(frame.response)">Download TXT</a></li>
+          </ul>
+        </li>
+        <li dropdown="" ng-show="frame.type == &quot;cypher&quot; &amp;&amp; expanded" class="dropdown"><a dropdown-toggle="" tooltip-placement="bottom" tooltip="Export to file" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportGraphSVG()" ng-show="isActive(&quot;graph&quot;)">Export SVG</a><a exportable ng-click="exportPlanSVG()" ng-show="isActive(&quot;plan&quot;)">Export SVG</a><a exportable ng-click="exportGraphPNG()" ng-show="isActive(&quot;graph&quot;)">Export PNG</a><a exportable ng-click="exportPlanPNG()" ng-show="isActive(&quot;plan&quot;)">Export PNG</a><a exportable ng-click="exportJSON(frame.response.table._response)">Export JSON</a><a exportable ng-click="exportCSV(frame.response.table)">Export CSV</a></li>
+          </ul>
+        </li>
+        <li><a ng-click="pin(frame)" ng-class="{pinned: pinned}" tooltip-placement="bottom" tooltip="Pin at top" class="button sl sl-pin"></a></li>
+        <li ng-if="expanded"><a ng-click="toggleFullscreen(true)" tooltip-placement="bottom" tooltip="Fullscreen" ng-show="frame.fullscreenable" class="button sl sl-scale-spread"></a></li>
+        <li ng-if="frame.type == 'cypher' &amp;&amp; expanded"><a ng-click="toggleVisibleContent()" tooltip-placement="bottom" tooltip="Collapse" class="button sl sl-chevron-up"></a></li>
+        <li ng-if="frame.type == 'cypher' &amp;&amp; !expanded"><a ng-click="toggleVisibleContent()" tooltip-placement="bottom" tooltip="Expand" class="button sl sl-chevron-down"></a></li>
+        <li><a ng-click="frames.close(frame)" tooltip-placement="bottom" tooltip="Cancel and close" class="button sl sl-delete"></a></li>
+      </ul>
+      <div class="status"><span ng-if="frame.type == &quot;cypher&quot;" class="prompt code">$</span><span click-to-code="frame.input" class="code mono">{{frame.input | uncomment}}</span></div><a ng-click="toggleFullscreen(false)" tooltip="Close Fullscreen" tooltip-placement="bottom" class="close-fullscreen sl sl-scale-reduce"></a>
+    </div>
+    <div class="inner">
+      <div class="view-result admin">
+        <article ng-controller="UserAdminCreateUserController" class="help">
+          <div ng-if="!unauthorized" class="container-fluid">
+            <div class="col-md-2 summary">
+              <h3>Add user</h3>
+              <p class="lead">Add a new user to the database</p>
+              <p class="lead"><a exec-topic="server user list">See user list</a></p>
+              <div class="panel-heading-info-icon"></div>
+            </div>
+            <div class="col-md-10">
+              <table class="table table-condensed">
+                <tr>
+                  <th class="col-md-2">Username</th>
+                  <th class="col-md-3">Role(s)</th>
+                  <th class="col-md-2">Password</th>
+                  <th class="col-md-2">Confirm password</th>
+                  <th class="col-md-2">On first login</th>
+                  <th class="col-md-1"></th>
+                </tr>
+                <tr>
+                  <td>
+                    <input ng-disabled="addingUser" ng-model="user.fields.username" type="text">
+                  </td>
+                  <td>
+                    <div ng-if="Features.canGetRoles" user-roles ng-model="user.fields"></div>
+                    <div ng-if="!Features.canGetRoles">N/A</div>
+                  </td>
+                  <td>
+                    <input ng-disabled="addingUser" ng-model="user.fields.password" type="password">
+                  </td>
+                  <td>
+                    <input ng-disabled="addingUser" ng-model="user.fields.passwordConfirmation" type="password">
+                  </td>
+                  <td>
+                    <label>Require password change:</label>
+                    <input ng-disabled="addingUser" ng-model="user.fields.requirePasswordChange" type="checkbox">
+                  </td>
+                  <td><a ng-hide="addingUser" ng-disabled="!enableSubmit()" ng-click="addNewUser()" tooltip="Save" class="sl sl-arrow-circle-right"></a></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div ng-if="unauthorized" class="container-fluid">
+            <div class="col-md-12">
+              <p>Please connect to the server to see this frame</p>
+            </div>
+          </div>
+        </article>
+        <div ng-show="frame.hasErrors" class="status-bar error">
+          <div class="status">
+            <div class="fa fa-exclamation-triangle icon-warning-sign">&nbsp;</div>{{frame.errorText}} : {{frame.detailedErrorText}}
+          </div>
+        </div>
+        <div ng-show="frame.successMessage" class="status-bar error client-success">
+          <div ng-show="frame.successMessage" class="status">
+            <div class="fa fa-check-circle icon-success-sign">&nbsp;</div>{{frame.successMessage}}
+          </div>
+        </div>
+        <div ng-show="frame.warningText" class="status-bar error client-warning">
+          <div class="status">
+            <div class="fa fa-exclamation-triangle icon-warning-sign">&nbsp;</div>{{frame.warningText}}
+          </div>
+        </div>
+        <footer ng-show="neo4j.clusterRole" class="tight relative"><small>Note: User management events do not propagate across a cluster</small></footer>
+      </div>
+    </div>
+  </div>
+</div>

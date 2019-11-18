@@ -1,0 +1,64 @@
+<div ng-controller="ParameterCtrl" fullscreen="fullscreen">
+  <div class="outer">
+    <div class="code-bar">
+      <ul class="actions list-inline">
+        <li dropdown="" ng-show="frame.type == &quot;http&quot;" class="dropdown"><a dropdown-toggle="" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportJSON(frame.response)">Download JSON</a></li>
+          </ul>
+        </li>
+        <li dropdown="" ng-show="frame.type == &quot;shell&quot;" class="dropdown"><a dropdown-toggle="" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportText(frame.response)">Download TXT</a></li>
+          </ul>
+        </li>
+        <li dropdown="" ng-show="frame.type == &quot;cypher&quot; &amp;&amp; expanded" class="dropdown"><a dropdown-toggle="" tooltip-placement="bottom" tooltip="Export to file" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportGraphSVG()" ng-show="isActive(&quot;graph&quot;)">Export SVG</a><a exportable ng-click="exportPlanSVG()" ng-show="isActive(&quot;plan&quot;)">Export SVG</a><a exportable ng-click="exportGraphPNG()" ng-show="isActive(&quot;graph&quot;)">Export PNG</a><a exportable ng-click="exportPlanPNG()" ng-show="isActive(&quot;plan&quot;)">Export PNG</a><a exportable ng-click="exportJSON(frame.response.table._response)">Export JSON</a><a exportable ng-click="exportCSV(frame.response.table)">Export CSV</a></li>
+          </ul>
+        </li>
+        <li><a ng-click="pin(frame)" ng-class="{pinned: pinned}" tooltip-placement="bottom" tooltip="Pin at top" class="button sl sl-pin"></a></li>
+        <li ng-if="expanded"><a ng-click="toggleFullscreen(true)" tooltip-placement="bottom" tooltip="Fullscreen" ng-show="frame.fullscreenable" class="button sl sl-scale-spread"></a></li>
+        <li ng-if="frame.type == 'cypher' &amp;&amp; expanded"><a ng-click="toggleVisibleContent()" tooltip-placement="bottom" tooltip="Collapse" class="button sl sl-chevron-up"></a></li>
+        <li ng-if="frame.type == 'cypher' &amp;&amp; !expanded"><a ng-click="toggleVisibleContent()" tooltip-placement="bottom" tooltip="Expand" class="button sl sl-chevron-down"></a></li>
+        <li><a ng-click="frames.close(frame)" tooltip-placement="bottom" tooltip="Cancel and close" class="button sl sl-delete"></a></li>
+      </ul>
+      <div class="status"><span ng-if="frame.type == &quot;cypher&quot;" class="prompt code">$</span><span click-to-code="frame.input" class="code mono">{{frame.input | uncomment}}</span></div><a ng-click="toggleFullscreen(false)" tooltip="Close Fullscreen" tooltip-placement="bottom" class="close-fullscreen sl sl-scale-reduce"></a>
+    </div>
+    <div class="inner">
+      <div class="view-result">
+        <article class="admin">
+          <div class="view-result-table result no-min-height">
+            <div class="table-holder no-min-height">
+              <div ng-hide="frame.hasErrors">
+                <table class="table table-condensed">
+                  <tr>
+                    <th class="col-sm-2">Parameter name</th>
+                    <th class="col-sm-4">Value</th>
+                  </tr>
+                  <tr ng-repeat="(key, value) in setParam">
+                    <td> <span>{{key}}</span></td>
+                    <td> <span>{{value}}</span></td>
+                  </tr>
+                </table>Execute&nbsp;  <a exec-topic="params">:params</a>to display all defined parameters.
+              </div>
+              <div ng-show="frame.hasErrors">
+                <p>Read about defining parameters:  <a help-topic="param">:help param</a></p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div ng-show="frame.hasErrors" class="status-bar error">
+        <div class="status">
+          <div class="fa fa-exclamation-triangle icon-warning-sign">&nbsp;</div>{{frame.errorText}}
+        </div>
+      </div>
+      <div ng-show="frame.successMessage" class="status-bar error client-success">
+        <div ng-show="frame.successMessage" class="status">
+          <div class="fa fa-check-circle icon-success-sign">&nbsp;</div>{{frame.successMessage}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

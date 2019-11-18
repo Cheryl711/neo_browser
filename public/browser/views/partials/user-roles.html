@@ -1,0 +1,6 @@
+<div ng-repeat="role in listOfAssignedRoles()" class="token token-label">{{ role }}<a ng-click="removeRole(role)" tooltip="Remove" class="sl sl-minus-circle"></a></div>
+<div class="select">
+  <select ng-show="isAddingRole" ng-model="selectedItem" ng-change="appendRole()">
+    <option ng-repeat="role in listOfKnownRoles()" value="{{role}}">{{role}}</option>
+  </select>
+</div><span><a ng-hide="isAddingRole || listOfKnownRoles().length == 0" ng-click="showRole()" tooltip="Add" class="sl sl-add-circle"></a></span>

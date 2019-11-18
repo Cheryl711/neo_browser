@@ -1,0 +1,22 @@
+<article class="help">
+  <div class="container-fluid">
+    <section class="row-fluid summary">
+      <div class="summary col-sm-3">
+        <h3>Set a parameter</h3>
+        <p class="lead">Set a parameter to be sent with queries.</p>
+      </div>
+      <div class="details col-sm-9">
+        <p>The&nbsp;<code>:param name: 'Stella'</code> command will define a parameter named "name" and it will be sent along with your queries.<br>Using parameters, rather than hard coding values, will allow fo reuse 
+          of the query plan cahe.
+        </p>
+        <p>Cypher query example with a param:&nbsp;<code>MATCH (n:Person) WHERE n.name = $name</code></p>
+        <table class="table-condensed table-help">
+          <tr>
+            <th>Related:</th>
+            <td><a help-topic="params">:help params</a></td>
+          </tr>
+        </table>
+      </div>
+    </section>
+  </div>
+</article>

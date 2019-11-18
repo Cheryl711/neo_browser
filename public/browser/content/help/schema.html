@@ -1,0 +1,30 @@
+<article class="help">
+  <div class="container-fluid">
+    <section class="row-fluid summary">
+      <div class="summary col-sm-3">
+        <h3>Schema</h3>
+        <p class="lead">Database schema indexes</p>
+      </div>
+      <div class="details col-sm-9">
+        <p>Shows information about database schema indexes and constraints.</p>
+        <table class="table-condensed table-help">
+          <tr>
+            <th>Reference:</th>
+            <td><a href="{{ neo4j.version | neo4jDeveloperDoc }}/cypher/#cypher-schema">Cypher Schema</a></td>
+          </tr>
+          <tr>
+            <th>Related:</th>
+            <td><a help-topic="create-index-on">:help CREATE INDEX ON</a>&nbsp;<a help-topic="drop-index-on">:help DROP INDEX ON</a>&nbsp;<a help-topic="create-constraint-on">:help CREATE CONSTRAINT ON</a>&nbsp;<a help-topic="drop-constraint-on">:help DROP CONSTRAINT ON</a></td>
+          </tr>
+        </table>
+      </div>
+    </section>
+    <section class="row-fluid example">
+      <div class="col-sm-9 col-sm-offset-3">
+        <figure>
+          <pre class="code runnable standalone-example">:schema</pre>
+        </figure>
+      </div>
+    </section>
+  </div>
+</article>

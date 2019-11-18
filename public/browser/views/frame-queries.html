@@ -1,0 +1,84 @@
+<div ng-controller="QueryStatusCtrl">
+  <div class="outer">
+    <div class="code-bar">
+      <ul class="actions list-inline">
+        <li dropdown="" ng-show="frame.type == &quot;http&quot;" class="dropdown"><a dropdown-toggle="" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportJSON(frame.response)">Download JSON</a></li>
+          </ul>
+        </li>
+        <li dropdown="" ng-show="frame.type == &quot;shell&quot;" class="dropdown"><a dropdown-toggle="" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportText(frame.response)">Download TXT</a></li>
+          </ul>
+        </li>
+        <li dropdown="" ng-show="frame.type == &quot;cypher&quot; &amp;&amp; expanded" class="dropdown"><a dropdown-toggle="" tooltip-placement="bottom" tooltip="Export to file" class="button sl sl-download-drive dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a exportable ng-click="exportGraphSVG()" ng-show="isActive(&quot;graph&quot;)">Export SVG</a><a exportable ng-click="exportPlanSVG()" ng-show="isActive(&quot;plan&quot;)">Export SVG</a><a exportable ng-click="exportGraphPNG()" ng-show="isActive(&quot;graph&quot;)">Export PNG</a><a exportable ng-click="exportPlanPNG()" ng-show="isActive(&quot;plan&quot;)">Export PNG</a><a exportable ng-click="exportJSON(frame.response.table._response)">Export JSON</a><a exportable ng-click="exportCSV(frame.response.table)">Export CSV</a></li>
+          </ul>
+        </li>
+        <li><a ng-click="pin(frame)" ng-class="{pinned: pinned}" tooltip-placement="bottom" tooltip="Pin at top" class="button sl sl-pin"></a></li>
+        <li ng-if="expanded"><a ng-click="toggleFullscreen(true)" tooltip-placement="bottom" tooltip="Fullscreen" ng-show="frame.fullscreenable" class="button sl sl-scale-spread"></a></li>
+        <li ng-if="frame.type == 'cypher' &amp;&amp; expanded"><a ng-click="toggleVisibleContent()" tooltip-placement="bottom" tooltip="Collapse" class="button sl sl-chevron-up"></a></li>
+        <li ng-if="frame.type == 'cypher' &amp;&amp; !expanded"><a ng-click="toggleVisibleContent()" tooltip-placement="bottom" tooltip="Expand" class="button sl sl-chevron-down"></a></li>
+        <li><a ng-click="frames.close(frame)" tooltip-placement="bottom" tooltip="Cancel and close" class="button sl sl-delete"></a></li>
+      </ul>
+      <div class="status"><span ng-if="frame.type == &quot;cypher&quot;" class="prompt code">$</span><span click-to-code="frame.input" class="code mono">{{frame.input | uncomment}}</span></div><a ng-click="toggleFullscreen(false)" tooltip="Close Fullscreen" tooltip-placement="bottom" class="close-fullscreen sl sl-scale-reduce"></a>
+    </div>
+    <div class="inner">
+      <div class="view-result has-statusbar">
+        <article class="scrolling">
+          <div class="view-result-table">
+            <div class="table-holder no-min-height">
+              <div ng-hide="isFetching &amp;&amp; !autoRefresh" class="admin right-padded">
+                <table ng-show="queries.length" class="table table-condensed table-margin table-fixed">
+                  <tr>
+                    <th class="col-sm-2">Database URI</th>
+                    <th class="col-sm-1">User</th>
+                    <th class="col-sm-4">Query</th>
+                    <th class="col-sm-1">Params</th>
+                    <th class="col-sm-1">Meta</th>
+                    <th class="col-sm-2">Elapsed time</th>
+                    <th class="col-sm-1">Kill</th>
+                  </tr>
+                  <tr check-overflowing-children="check-overflowing-children" overflow-model="query" ng-repeat="query in queries">
+                    <td ng-class="{truncate: !query.expanded}" class="check-overflow"><code title="{{query.clusterMember.address}}" ng-class="{oneline: !query.expanded}">{{query.clusterMember.address}}</code></td>
+                    <td> <span>{{query.username}}</span></td>
+                    <td ng-class="{truncate: !query.expanded}" class="check-overflow"><code title="{{query.query}}" ng-class="{oneline: !query.expanded}">{{query.query}}</code></td>
+                    <td ng-class="{truncate: !query.expanded}" class="check-overflow"><code title="{{query.parameters}}" ng-class="{oneline: !query.expanded}">{{query.parameters}}</code></td>
+                    <td ng-class="{truncate: !query.expanded}" class="check-overflow"><code title="{{query.metaData}}" ng-class="{oneline: !query.expanded}">{{query.metaData}}</code></td>
+                    <td><span>{{query.elapsedTime}}</span></td>
+                    <td class="relative"> <span> <a ng-hide="query.confirmKill" ng-click="query.confirmKill = true" tooltip="Kill query" class="sl sl-minus-circle"></a><a ng-show="query.confirmKill" ng-click="killQuery(query.clusterMember, query.queryId)" tooltip="Confirm" class="sl sl-arrow-circle-right"></a><a ng-show="query.confirmKill" ng-click="query.confirmKill = false" tooltip="Cancel" class="sl sl-delete-circle"></a></span>
+                      <div style="position: absolute; right: 2px" ng-click="query.expanded = !query.expanded" ng-class="{hidden: (!query.expanded &amp;&amp; !query.overflows), 'fa-caret-left': !query.expanded, 'fa-caret-down': query.expanded}" class="fa overflow-indicator hover-pointer"></div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div ng-show="isFetching &amp;&amp; !autoRefresh" class="frame-loading"><span class="fa fa-spinner fa-spin fa-2x"></span></div>
+              <div ng-hide="queries.length || isFetching" class="frame-loading">
+                <p>No running queries found</p>
+              </div>
+            </div>
+          </div>
+          <footer ng-class="{error: hasErrors}" class="tight">
+            <div ng-show="!isFetching" style="text-align: left" class="status">
+              <div ng-show="hasErrors" class="fa fa-exclamation-triangle icon-warning-sign">&nbsp;</div>
+              <p>{{statusMessage()}}</p>
+            </div>
+            <div class="actions">
+              <div ng-click="toggleAutoRefresh()" class="toggle toggle-footer-margin"><a class="toggle-text">Auto-refresh</a>
+                <div class="switch">
+                  <label>
+                    <div ng-class="{right: autoRefresh}" class="switch-inner"><span class="right-text">ON</span>
+                      <div class="handle"></div><span class="left-text">OFF</span>
+                    </div>
+                  </label>
+                </div>
+              </div><a ng-click="refreshLater()" class="button fa fa-refresh"></a>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
