@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TITLE</title>
+</head>
+<script>
+    window.onload=function(){
+        const iframe = document.getElementById("iframe")
+        iframe.src = "http://localhost:5000/browser/NeoEmbed.html?query=" + encodeURIComponent("match (n) return (n) ").replace(/=/g, '%3d')
+   }
+</script>
+
+<body>
+        <iframe id="iframe" 
+        style="
+            width: 100%;
+            height: 600px
+          "
+          scrolling='no'
+          frameBorder='0'
+        ></iframe>
+    <!-- <iframe
+        style={{
+          width: '100%',
+          height: '600px',
+        }}
+        scrolling={'no'}
+        frameBorder={'0'}
+        src={"www.baidu.com"} >
+    </iframe> -->
+    <!-- "http://localhost:7474/browser/NeoEmbed.html?query=${encodeURIComponent(queryUri).replace(/=/g, '%3d')}" -->
+</body>
+<html>
